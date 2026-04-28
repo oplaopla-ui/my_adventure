@@ -1,0 +1,43 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 1
+Hexadecimal [32-Bits]
+
+Symbol Table
+
+    .__.$$$.                                                    =   00002710 L
+    .__.ABS.                                                    =   00000000 G
+    .__.CPU.                                                    =   00000000 L
+    .__.H$L.                                                    =   00000000 L
+  8 __xinit__char_target_x                                          00000003 R
+  8 __xinit__char_target_y                                          00000005 R
+  8 __xinit__char_walking                                           00000006 R
+  8 __xinit__char_world_x                                           00000000 R
+  8 __xinit__char_world_y                                           00000002 R
+  3 _char_target_x                                                  00000003 GR
+  3 _char_target_y                                                  00000005 GR
+  0 _char_tile                                                      0000002C R
+  3 _char_walking                                                   00000006 GR
+  3 _char_world_x                                                   00000000 GR
+  3 _char_world_y                                                   00000002 GR
+  0 _character_draw                                                 00000102 GR
+  0 _character_init                                                 00000000 GR
+  0 _character_update                                               0000003C GR
+  0 _character_walk_to                                              00000169 GR
+    _set_sprite_data                                                ******** GX
+    _shadow_OAM                                                     ******** GX
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
+Hexadecimal [32-Bits]
+
+Area Table
+
+   0 _CODE                                      size      178   flags    0
+   1 _HRAM                                      size        0   flags    0
+   2 _DATA                                      size        0   flags    0
+   3 _INITIALIZED                               size        7   flags    0
+   4 _DABS                                      size        0   flags    8
+   5 _HOME                                      size        0   flags    0
+   6 _GSINIT                                    size        0   flags    0
+   7 _GSFINAL                                   size        0   flags    0
+   8 _INITIALIZER                               size        7   flags    0
+   9 _CABS                                      size        0   flags    8
+

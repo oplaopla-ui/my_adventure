@@ -1,0 +1,374 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.5.1 #15267 (Mac OS X ppc)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module character
+                                      6 	
+                                      7 ;--------------------------------------------------------
+                                      8 ; Public variables in this module
+                                      9 ;--------------------------------------------------------
+                                     10 	.globl _set_sprite_data
+                                     11 	.globl _char_walking
+                                     12 	.globl _char_target_y
+                                     13 	.globl _char_target_x
+                                     14 	.globl _char_world_y
+                                     15 	.globl _char_world_x
+                                     16 	.globl _character_init
+                                     17 	.globl _character_update
+                                     18 	.globl _character_draw
+                                     19 	.globl _character_walk_to
+                                     20 ;--------------------------------------------------------
+                                     21 ; special function registers
+                                     22 ;--------------------------------------------------------
+                                     23 	.area _HRAM
+                                     24 ;--------------------------------------------------------
+                                     25 ; ram data
+                                     26 ;--------------------------------------------------------
+                                     27 	.area _DATA
+                                     28 ;--------------------------------------------------------
+                                     29 ; ram data
+                                     30 ;--------------------------------------------------------
+                                     31 	.area _INITIALIZED
+    00000000                         32 _char_world_x::
+    00000000                         33 	.ds 2
+    00000002                         34 _char_world_y::
+    00000002                         35 	.ds 1
+    00000003                         36 _char_target_x::
+    00000003                         37 	.ds 2
+    00000005                         38 _char_target_y::
+    00000005                         39 	.ds 1
+    00000006                         40 _char_walking::
+    00000006                         41 	.ds 1
+                                     42 ;--------------------------------------------------------
+                                     43 ; absolute external ram data
+                                     44 ;--------------------------------------------------------
+                                     45 	.area _DABS (ABS)
+                                     46 ;--------------------------------------------------------
+                                     47 ; global & static initialisations
+                                     48 ;--------------------------------------------------------
+                                     49 	.area _HOME
+                                     50 	.area _GSINIT
+                                     51 	.area _GSFINAL
+                                     52 	.area _GSINIT
+                                     53 ;--------------------------------------------------------
+                                     54 ; Home
+                                     55 ;--------------------------------------------------------
+                                     56 	.area _HOME
+                                     57 	.area _HOME
+                                     58 ;--------------------------------------------------------
+                                     59 ; code
+                                     60 ;--------------------------------------------------------
+                                     61 	.area _CODE
+                                     62 ;character.c:34: void character_init(void) {
+                                     63 ;	---------------------------------
+                                     64 ; Function character_init
+                                     65 ; ---------------------------------
+    00000000                         66 _character_init::
+                                     67 ;character.c:36: set_sprite_data(CHAR_TILE_L, 1, char_tile);
+    00000000 01r2Cr00         [12]   68 	ld	bc, #_char_tile+0
+    00000003 C5               [16]   69 	push	bc
+    00000004 21 01 01         [12]   70 	ld	hl, #0x101
+    00000007 E5               [16]   71 	push	hl
+    00000008 CDr00r00         [24]   72 	call	_set_sprite_data
+    0000000B E8 04            [16]   73 	add	sp, #4
+                                     74 ;character.c:37: set_sprite_data(CHAR_TILE_R, 1, char_tile);
+    0000000D C5               [16]   75 	push	bc
+    0000000E 21 02 01         [12]   76 	ld	hl, #0x102
+    00000011 E5               [16]   77 	push	hl
+    00000012 CDr00r00         [24]   78 	call	_set_sprite_data
+    00000015 E8 04            [16]   79 	add	sp, #4
+                                     80 ;/Users/johanthornqvist/Desktop/gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    00000017 21r06r00         [12]   81 	ld	hl, #(_shadow_OAM + 6)
+    0000001A 36 01            [12]   82 	ld	(hl), #0x01
+    0000001C 21r0Ar00         [12]   83 	ld	hl, #(_shadow_OAM + 10)
+    0000001F 36 02            [12]   84 	ld	(hl), #0x02
+                                     85 ;/Users/johanthornqvist/Desktop/gbdk/include/gb/gb.h:1946: shadow_OAM[nb].prop=prop;
+    00000021 21r07r00         [12]   86 	ld	hl, #(_shadow_OAM + 7)
+    00000024 36 00            [12]   87 	ld	(hl), #0x00
+    00000026 21r0Br00         [12]   88 	ld	hl, #(_shadow_OAM + 11)
+    00000029 36 00            [12]   89 	ld	(hl), #0x00
+                                     90 ;character.c:43: set_sprite_prop(CHAR_SPRITE_R, 0x00);
+                                     91 ;character.c:44: }
+    0000002B C9               [16]   92 	ret
+    0000002C                         93 _char_tile:
+    0000002C FF                      94 	.db #0xff	; 255
+    0000002D FF                      95 	.db #0xff	; 255
+    0000002E FF                      96 	.db #0xff	; 255
+    0000002F FF                      97 	.db #0xff	; 255
+    00000030 FF                      98 	.db #0xff	; 255
+    00000031 FF                      99 	.db #0xff	; 255
+    00000032 FF                     100 	.db #0xff	; 255
+    00000033 FF                     101 	.db #0xff	; 255
+    00000034 FF                     102 	.db #0xff	; 255
+    00000035 FF                     103 	.db #0xff	; 255
+    00000036 FF                     104 	.db #0xff	; 255
+    00000037 FF                     105 	.db #0xff	; 255
+    00000038 FF                     106 	.db #0xff	; 255
+    00000039 FF                     107 	.db #0xff	; 255
+    0000003A FF                     108 	.db #0xff	; 255
+    0000003B FF                     109 	.db #0xff	; 255
+                                    110 ;character.c:46: void character_update(void) {
+                                    111 ;	---------------------------------
+                                    112 ; Function character_update
+                                    113 ; ---------------------------------
+    0000003C                        114 _character_update::
+    0000003C 3B               [ 8]  115 	dec	sp
+    0000003D 3B               [ 8]  116 	dec	sp
+                                    117 ;character.c:47: if (!char_walking) return;
+    0000003E FAr06r00         [16]  118 	ld	a, (#_char_walking)
+    00000041 B7               [ 4]  119 	or	a, a
+    00000042 CArFFr00         [16]  120 	jp	Z, 00122$
+                                    121 ;character.c:52: char_world_x = char_target_x;
+    00000045 FAr03r00         [16]  122 	ld	a, (_char_target_x)
+    00000048 4F               [ 4]  123 	ld	c, a
+    00000049 21r04r00         [12]  124 	ld	hl, #_char_target_x + 1
+    0000004C 46               [ 8]  125 	ld	b, (hl)
+                                    126 ;character.c:54: char_world_x += CHAR_SPEED;
+    0000004D FAr00r00         [16]  127 	ld	a, (#_char_world_x)
+    00000050 F8 00            [12]  128 	ldhl	sp,	#0
+    00000052 77               [ 8]  129 	ld	(hl), a
+    00000053 FAr01r00         [16]  130 	ld	a, (#_char_world_x + 1)
+    00000056 F8 01            [12]  131 	ldhl	sp,	#1
+    00000058 77               [ 8]  132 	ld	(hl), a
+                                    133 ;character.c:50: if (char_world_x < char_target_x) {
+    00000059 11r00r00         [12]  134 	ld	de, #_char_world_x
+    0000005C 21r03r00         [12]  135 	ld	hl, #_char_target_x
+    0000005F 1A               [ 8]  136 	ld	a, (de)
+    00000060 13               [ 8]  137 	inc	de
+    00000061 96               [ 8]  138 	sub	a, (hl)
+    00000062 23               [ 8]  139 	inc	hl
+    00000063 1A               [ 8]  140 	ld	a, (de)
+    00000064 9E               [ 8]  141 	sbc	a, (hl)
+    00000065 30 29            [12]  142 	jr	NC, 00112$
+                                    143 ;character.c:51: if (char_target_x - char_world_x <= CHAR_SPEED) {
+    00000067 FAr03r00         [16]  144 	ld	a, (#_char_target_x)
+    0000006A 21r00r00         [12]  145 	ld	hl, #_char_world_x
+    0000006D 96               [ 8]  146 	sub	a, (hl)
+    0000006E 5F               [ 4]  147 	ld	e, a
+    0000006F FAr04r00         [16]  148 	ld	a, (#_char_target_x + 1)
+    00000072 21r01r00         [12]  149 	ld	hl, #_char_world_x + 1
+    00000075 9E               [ 8]  150 	sbc	a, (hl)
+    00000076 57               [ 4]  151 	ld	d, a
+    00000077 3E 01            [ 8]  152 	ld	a, #0x01
+    00000079 BB               [ 4]  153 	cp	a, e
+    0000007A 3E 00            [ 8]  154 	ld	a, #0x00
+    0000007C 9A               [ 4]  155 	sbc	a, d
+    0000007D 38 06            [12]  156 	jr	C, 00104$
+                                    157 ;character.c:52: char_world_x = char_target_x;
+    0000007F 2B               [ 8]  158 	dec	hl
+    00000080 79               [ 4]  159 	ld	a, c
+    00000081 22               [ 8]  160 	ld	(hl+), a
+    00000082 70               [ 8]  161 	ld	(hl), b
+    00000083 18 42            [12]  162 	jr	00113$
+    00000085                        163 00104$:
+                                    164 ;character.c:54: char_world_x += CHAR_SPEED;
+    00000085 C1               [12]  165 	pop	bc
+    00000086 C5               [16]  166 	push	bc
+    00000087 03               [ 8]  167 	inc	bc
+    00000088 21r00r00         [12]  168 	ld	hl, #_char_world_x
+    0000008B 79               [ 4]  169 	ld	a, c
+    0000008C 22               [ 8]  170 	ld	(hl+), a
+    0000008D 70               [ 8]  171 	ld	(hl), b
+    0000008E 18 37            [12]  172 	jr	00113$
+    00000090                        173 00112$:
+                                    174 ;character.c:56: } else if (char_world_x > char_target_x) {
+    00000090 11r03r00         [12]  175 	ld	de, #_char_target_x
+    00000093 21r00r00         [12]  176 	ld	hl, #_char_world_x
+    00000096 1A               [ 8]  177 	ld	a, (de)
+    00000097 13               [ 8]  178 	inc	de
+    00000098 96               [ 8]  179 	sub	a, (hl)
+    00000099 23               [ 8]  180 	inc	hl
+    0000009A 1A               [ 8]  181 	ld	a, (de)
+    0000009B 9E               [ 8]  182 	sbc	a, (hl)
+    0000009C 30 29            [12]  183 	jr	NC, 00113$
+                                    184 ;character.c:57: if (char_world_x - char_target_x <= CHAR_SPEED) {
+    0000009E FAr00r00         [16]  185 	ld	a, (#_char_world_x)
+    000000A1 21r03r00         [12]  186 	ld	hl, #_char_target_x
+    000000A4 96               [ 8]  187 	sub	a, (hl)
+    000000A5 5F               [ 4]  188 	ld	e, a
+    000000A6 FAr01r00         [16]  189 	ld	a, (#_char_world_x + 1)
+    000000A9 21r04r00         [12]  190 	ld	hl, #_char_target_x + 1
+    000000AC 9E               [ 8]  191 	sbc	a, (hl)
+    000000AD 57               [ 4]  192 	ld	d, a
+    000000AE 3E 01            [ 8]  193 	ld	a, #0x01
+    000000B0 BB               [ 4]  194 	cp	a, e
+    000000B1 3E 00            [ 8]  195 	ld	a, #0x00
+    000000B3 9A               [ 4]  196 	sbc	a, d
+    000000B4 38 08            [12]  197 	jr	C, 00107$
+                                    198 ;character.c:58: char_world_x = char_target_x;
+    000000B6 21r00r00         [12]  199 	ld	hl, #_char_world_x
+    000000B9 79               [ 4]  200 	ld	a, c
+    000000BA 22               [ 8]  201 	ld	(hl+), a
+    000000BB 70               [ 8]  202 	ld	(hl), b
+    000000BC 18 09            [12]  203 	jr	00113$
+    000000BE                        204 00107$:
+                                    205 ;character.c:60: char_world_x -= CHAR_SPEED;
+    000000BE C1               [12]  206 	pop	bc
+    000000BF C5               [16]  207 	push	bc
+    000000C0 0B               [ 8]  208 	dec	bc
+    000000C1 21r00r00         [12]  209 	ld	hl, #_char_world_x
+    000000C4 79               [ 4]  210 	ld	a, c
+    000000C5 22               [ 8]  211 	ld	(hl+), a
+    000000C6 70               [ 8]  212 	ld	(hl), b
+    000000C7                        213 00113$:
+                                    214 ;character.c:65: if (char_world_y < char_target_y) {
+    000000C7 FAr02r00         [16]  215 	ld	a, (#_char_world_y)
+    000000CA 21r05r00         [12]  216 	ld	hl, #_char_target_y
+    000000CD 96               [ 8]  217 	sub	a, (hl)
+    000000CE 30 06            [12]  218 	jr	NC, 00117$
+                                    219 ;character.c:66: char_world_y++;
+    000000D0 21r02r00         [12]  220 	ld	hl, #_char_world_y
+    000000D3 34               [12]  221 	inc	(hl)
+    000000D4 18 0A            [12]  222 	jr	00118$
+    000000D6                        223 00117$:
+                                    224 ;character.c:67: } else if (char_world_y > char_target_y) {
+    000000D6 FAr05r00         [16]  225 	ld	a, (#_char_target_y)
+    000000D9 21r02r00         [12]  226 	ld	hl, #_char_world_y
+    000000DC 96               [ 8]  227 	sub	a, (hl)
+    000000DD 30 01            [12]  228 	jr	NC, 00118$
+                                    229 ;character.c:68: char_world_y--;
+    000000DF 35               [12]  230 	dec	(hl)
+    000000E0                        231 00118$:
+                                    232 ;character.c:72: if (char_world_x == char_target_x && char_world_y == char_target_y) {
+    000000E0 FAr00r00         [16]  233 	ld	a, (#_char_world_x)
+    000000E3 21r03r00         [12]  234 	ld	hl, #_char_target_x
+    000000E6 96               [ 8]  235 	sub	a, (hl)
+    000000E7 20 16            [12]  236 	jr	NZ, 00122$
+    000000E9 FAr01r00         [16]  237 	ld	a, (#_char_world_x + 1)
+    000000EC 21r04r00         [12]  238 	ld	hl, #_char_target_x + 1
+    000000EF 96               [ 8]  239 	sub	a, (hl)
+    000000F0 20 0D            [12]  240 	jr	NZ, 00122$
+    000000F2 FAr02r00         [16]  241 	ld	a, (#_char_world_y)
+    000000F5 21r05r00         [12]  242 	ld	hl, #_char_target_y
+    000000F8 96               [ 8]  243 	sub	a, (hl)
+    000000F9 20 04            [12]  244 	jr	NZ, 00122$
+                                    245 ;character.c:73: char_walking = 0;
+    000000FB AF               [ 4]  246 	xor	a, a
+    000000FC EAr06r00         [16]  247 	ld	(#_char_walking),a
+    000000FF                        248 00122$:
+                                    249 ;character.c:75: }
+    000000FF 33               [ 8]  250 	inc	sp
+    00000100 33               [ 8]  251 	inc	sp
+    00000101 C9               [16]  252 	ret
+                                    253 ;character.c:77: void character_draw(uint16_t cam_x) {
+                                    254 ;	---------------------------------
+                                    255 ; Function character_draw
+                                    256 ; ---------------------------------
+    00000102                        257 _character_draw::
+    00000102 3B               [ 8]  258 	dec	sp
+                                    259 ;character.c:82: sx = (int16_t)char_world_x - (int16_t)cam_x;
+    00000103 FAr00r00         [16]  260 	ld	a, (_char_world_x)
+    00000106 21r01r00         [12]  261 	ld	hl, #_char_world_x + 1
+    00000109 46               [ 8]  262 	ld	b, (hl)
+    0000010A 93               [ 4]  263 	sub	a, e
+    0000010B 4F               [ 4]  264 	ld	c, a
+    0000010C 78               [ 4]  265 	ld	a, b
+    0000010D 9A               [ 4]  266 	sbc	a, d
+    0000010E 47               [ 4]  267 	ld	b, a
+                                    268 ;character.c:85: hw_y   = char_world_y + 16;
+    0000010F FAr02r00         [16]  269 	ld	a, (_char_world_y)
+    00000112 C6 10            [ 8]  270 	add	a, #0x10
+    00000114 F8 00            [12]  271 	ldhl	sp,	#0
+    00000116 77               [ 8]  272 	ld	(hl), a
+                                    273 ;character.c:87: if (sx >= -8 && sx <= 160) {
+    00000117 79               [ 4]  274 	ld	a, c
+    00000118 D6 F8            [ 8]  275 	sub	a, #0xf8
+    0000011A 78               [ 4]  276 	ld	a, b
+    0000011B 17               [ 4]  277 	rla
+    0000011C 3F               [ 4]  278 	ccf
+    0000011D 1F               [ 4]  279 	rra
+    0000011E DE 7F            [ 8]  280 	sbc	a, #0x7f
+    00000120 38 39            [12]  281 	jr	C, 00102$
+    00000122 69               [ 4]  282 	ld	l, c
+    00000123 60               [ 4]  283 	ld	h, b
+    00000124 5C               [ 4]  284 	ld	e, h
+    00000125 16 00            [ 8]  285 	ld	d, #0x00
+    00000127 3E A0            [ 8]  286 	ld	a, #0xa0
+    00000129 BD               [ 4]  287 	cp	a, l
+    0000012A 3E 00            [ 8]  288 	ld	a, #0x00
+    0000012C 9C               [ 4]  289 	sbc	a, h
+    0000012D CB 7B            [ 8]  290 	bit	7, e
+    0000012F 28 07            [12]  291 	jr	Z, 00125$
+    00000131 CB 7A            [ 8]  292 	bit	7, d
+    00000133 20 08            [12]  293 	jr	NZ, 00126$
+    00000135 BF               [ 4]  294 	cp	a, a
+    00000136 18 05            [12]  295 	jr	00126$
+    00000138                        296 00125$:
+    00000138 CB 7A            [ 8]  297 	bit	7, d
+    0000013A 28 01            [12]  298 	jr	Z, 00126$
+    0000013C 37               [ 4]  299 	scf
+    0000013D                        300 00126$:
+    0000013D 38 1C            [12]  301 	jr	C, 00102$
+                                    302 ;character.c:89: hw_x_l = (uint8_t)(sx + 8);
+    0000013F 79               [ 4]  303 	ld	a, c
+    00000140 C6 08            [ 8]  304 	add	a, #0x08
+    00000142 57               [ 4]  305 	ld	d, a
+                                    306 ;character.c:90: hw_x_r = (uint8_t)(sx + 16);
+    00000143 79               [ 4]  307 	ld	a, c
+    00000144 C6 10            [ 8]  308 	add	a, #0x10
+    00000146 5F               [ 4]  309 	ld	e, a
+                                    310 ;/Users/johanthornqvist/Desktop/gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    00000147 01r04r00         [12]  311 	ld	bc, #(_shadow_OAM + 4)
+                                    312 ;/Users/johanthornqvist/Desktop/gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    0000014A F8 00            [12]  313 	ldhl	sp,	#0
+    0000014C 7E               [ 8]  314 	ld	a, (hl)
+    0000014D 02               [ 8]  315 	ld	(bc), a
+    0000014E 03               [ 8]  316 	inc	bc
+    0000014F 7A               [ 4]  317 	ld	a, d
+    00000150 02               [ 8]  318 	ld	(bc), a
+                                    319 ;/Users/johanthornqvist/Desktop/gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    00000151 01r08r00         [12]  320 	ld	bc, #_shadow_OAM+8
+                                    321 ;/Users/johanthornqvist/Desktop/gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    00000154 7E               [ 8]  322 	ld	a, (hl)
+    00000155 02               [ 8]  323 	ld	(bc), a
+    00000156 03               [ 8]  324 	inc	bc
+    00000157 7B               [ 4]  325 	ld	a, e
+    00000158 02               [ 8]  326 	ld	(bc), a
+                                    327 ;character.c:93: move_sprite(CHAR_SPRITE_R, hw_x_r, hw_y);
+    00000159 18 0C            [12]  328 	jr	00109$
+    0000015B                        329 00102$:
+                                    330 ;/Users/johanthornqvist/Desktop/gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    0000015B 21r04r00         [12]  331 	ld	hl, #(_shadow_OAM + 4)
+                                    332 ;/Users/johanthornqvist/Desktop/gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    0000015E AF               [ 4]  333 	xor	a, a
+    0000015F 22               [ 8]  334 	ld	(hl+), a
+    00000160 77               [ 8]  335 	ld	(hl), a
+                                    336 ;/Users/johanthornqvist/Desktop/gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    00000161 21r08r00         [12]  337 	ld	hl, #(_shadow_OAM + 8)
+                                    338 ;/Users/johanthornqvist/Desktop/gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    00000164 AF               [ 4]  339 	xor	a, a
+    00000165 22               [ 8]  340 	ld	(hl+), a
+    00000166 77               [ 8]  341 	ld	(hl), a
+                                    342 ;character.c:97: move_sprite(CHAR_SPRITE_R, 0, 0);
+    00000167                        343 00109$:
+                                    344 ;character.c:99: }
+    00000167 33               [ 8]  345 	inc	sp
+    00000168 C9               [16]  346 	ret
+                                    347 ;character.c:101: void character_walk_to(uint16_t wx, uint8_t wy) {
+                                    348 ;	---------------------------------
+                                    349 ; Function character_walk_to
+                                    350 ; ---------------------------------
+    00000169                        351 _character_walk_to::
+    00000169 21r03r00         [12]  352 	ld	hl, #_char_target_x
+    0000016C 73               [ 8]  353 	ld	(hl), e
+    0000016D 23               [ 8]  354 	inc	hl
+    0000016E 72               [ 8]  355 	ld	(hl), d
+    0000016F EAr05r00         [16]  356 	ld	(#_char_target_y),a
+                                    357 ;character.c:104: char_walking  = 1;
+    00000172 21r06r00         [12]  358 	ld	hl, #_char_walking
+    00000175 36 01            [12]  359 	ld	(hl), #0x01
+                                    360 ;character.c:105: }
+    00000177 C9               [16]  361 	ret
+                                    362 	.area _CODE
+                                    363 	.area _INITIALIZER
+    00000000                        364 __xinit__char_world_x:
+    00000000 50 00                  365 	.dw #0x0050
+    00000002                        366 __xinit__char_world_y:
+    00000002 64                     367 	.db #0x64	; 100	'd'
+    00000003                        368 __xinit__char_target_x:
+    00000003 50 00                  369 	.dw #0x0050
+    00000005                        370 __xinit__char_target_y:
+    00000005 64                     371 	.db #0x64	; 100	'd'
+    00000006                        372 __xinit__char_walking:
+    00000006 00                     373 	.db #0x00	; 0
+                                    374 	.area _CABS (ABS)

@@ -1,0 +1,92 @@
+#include "scene.h"
+#include <gb/gb.h>
+
+#define TILE_BLANK  0
+#define TILE_TL     1
+#define TILE_TR     2
+#define TILE_BL     3
+#define TILE_BR     4
+#define TILE_H_TOP  5
+#define TILE_H_BOT  6
+#define TILE_V_L    7
+#define TILE_V_R    8
+
+static const uint8_t tile_blank[16] = {
+    0x00,0x00, 0x00,0x00, 0x00,0x00, 0x00,0x00,
+    0x00,0x00, 0x00,0x00, 0x00,0x00, 0x00,0x00
+};
+static const uint8_t tile_tl[16] = {
+    0xFF,0xFF, 0x80,0x80, 0x80,0x80, 0x80,0x80,
+    0x80,0x80, 0x80,0x80, 0x80,0x80, 0x80,0x80
+};
+static const uint8_t tile_tr[16] = {
+    0xFF,0xFF, 0x01,0x01, 0x01,0x01, 0x01,0x01,
+    0x01,0x01, 0x01,0x01, 0x01,0x01, 0x01,0x01
+};
+static const uint8_t tile_bl[16] = {
+    0x80,0x80, 0x80,0x80, 0x80,0x80, 0x80,0x80,
+    0x80,0x80, 0x80,0x80, 0x80,0x80, 0xFF,0xFF
+};
+static const uint8_t tile_br[16] = {
+    0x01,0x01, 0x01,0x01, 0x01,0x01, 0x01,0x01,
+    0x01,0x01, 0x01,0x01, 0x01,0x01, 0xFF,0xFF
+};
+static const uint8_t tile_h_top[16] = {
+    0xFF,0xFF, 0x00,0x00, 0x00,0x00, 0x00,0x00,
+    0x00,0x00, 0x00,0x00, 0x00,0x00, 0x00,0x00
+};
+static const uint8_t tile_h_bot[16] = {
+    0x00,0x00, 0x00,0x00, 0x00,0x00, 0x00,0x00,
+    0x00,0x00, 0x00,0x00, 0x00,0x00, 0xFF,0xFF
+};
+static const uint8_t tile_v_l[16] = {
+    0x80,0x80, 0x80,0x80, 0x80,0x80, 0x80,0x80,
+    0x80,0x80, 0x80,0x80, 0x80,0x80, 0x80,0x80
+};
+static const uint8_t tile_v_r[16] = {
+    0x01,0x01, 0x01,0x01, 0x01,0x01, 0x01,0x01,
+    0x01,0x01, 0x01,0x01, 0x01,0x01, 0x01,0x01
+};
+
+void scene_init(void) {
+    uint8_t row, col, t;
+
+    set_bkg_data(TILE_BLANK,  1, tile_blank);
+    set_bkg_data(TILE_TL,     1, tile_tl);
+    set_bkg_data(TILE_TR,     1, tile_tr);
+    set_bkg_data(TILE_BL,     1, tile_bl);
+    set_bkg_data(TILE_BR,     1, tile_br);
+    set_bkg_data(TILE_H_TOP,  1, tile_h_top);
+    set_bkg_data(TILE_H_BOT,  1, tile_h_bot);
+    set_bkg_data(TILE_V_L,    1, tile_v_l);
+    set_bkg_data(TILE_V_R,    1, tile_v_r);
+
+    /* Clear the full 32x18 visible tilemap */
+    t = TILE_BLANK;
+    for (row = 0; row < 18; row++) {
+        for (col = 0; col < 32; col++) {
+            set_bkg_tiles(col, row, 1, 1, &t);
+        }
+    }
+
+    SHOW_BKG;
+}
+
+void scene_draw_box(uint8_t tx, uint8_t ty, uint8_t tw, uint8_t th) {
+    uint8_t x, y, t;
+
+    t = TILE_TL; set_bkg_tiles(tx,          ty,          1, 1, &t);
+    t = TILE_TR; set_bkg_tiles(tx + tw - 1, ty,          1, 1, &t);
+    t = TILE_BL; set_bkg_tiles(tx,          ty + th - 1, 1, 1, &t);
+    t = TILE_BR; set_bkg_tiles(tx + tw - 1, ty + th - 1, 1, 1, &t);
+
+    for (x = tx + 1; x < tx + tw - 1; x++) {
+        t = TILE_H_TOP; set_bkg_tiles(x, ty,          1, 1, &t);
+        t = TILE_H_BOT; set_bkg_tiles(x, ty + th - 1, 1, 1, &t);
+    }
+
+    for (y = ty + 1; y < ty + th - 1; y++) {
+        t = TILE_V_L; set_bkg_tiles(tx,          y, 1, 1, &t);
+        t = TILE_V_R; set_bkg_tiles(tx + tw - 1, y, 1, 1, &t);
+    }
+}
